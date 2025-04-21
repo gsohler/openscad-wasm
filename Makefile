@@ -73,25 +73,29 @@ build/openscad.wasm.js: .image$(VARIANT)-$(ENV).make
 	docker run --name tmpcpy $(DOCKER_TAG_OPENSCAD)
 	docker cp tmpcpy:/build/openscad.js build/openscad.wasm.js
 	docker cp tmpcpy:/build/openscad.wasm build/
-	docker cp tmpcpy:/build/openscad.wasm.map build/ || true
+#	docker cp tmpcpy:/build/openscad.wasm.map build/ || true
 	docker rm tmpcpy
 
 .image$(VARIANT)-$(ENV).make: .base-image$(VARIANT)-$(ENV).make Dockerfile
 ifeq ($(BUILDKIT),0)
-	docker build libs/openscad \
+	docker build libs/pythonscad \
 		-f Dockerfile \
 		-t $(DOCKER_TAG_OPENSCAD) \
 		--build-arg "CMAKE_BUILD_TYPE=$(CMAKE_BUILD_TYPE)" \
+		--build-arg "EXPERIMENTAL=1" \
+		--build-arg "ENABLE_PYTHON=1" \
 		--build-arg "DOCKER_TAG_BASE=$(DOCKER_TAG_BASE)" \
 		--build-arg "EMSCRIPTEN_FLAGS=$(EMSCRIPTEN_FLAGS)"
 else
-	docker buildx build libs/openscad \
+	docker buildx build libs/pythonscad \
 		-f Dockerfile \
 		-t $(DOCKER_TAG_OPENSCAD) \
 		--pull=false \
 		--load \
 		--build-context $(DOCKER_TAG_BASE)="oci-layout://$(PWD)/$(DOCKER_OCI_BASE)" \
 		--build-arg "CMAKE_BUILD_TYPE=$(CMAKE_BUILD_TYPE)" \
+		--build-arg "EXPERIMENTAL=1" \
+		--build-arg "ENABLE_PYTHON=1" \
 		--build-arg "DOCKER_TAG_BASE=$(DOCKER_TAG_BASE)" \
 		--build-arg "EMSCRIPTEN_FLAGS=$(EMSCRIPTEN_FLAGS)"
 endif
@@ -122,6 +126,7 @@ libs: \
 	libs/cairo \
 	libs/cgal \
 	libs/eigen \
+	libs/cairo \
 	libs/fontconfig \
 	libs/freetype \
 	libs/libffi \
@@ -131,13 +136,14 @@ libs: \
 	libs/libexpat \
 	libs/liblzma \
 	libs/libzip \
-	libs/openscad \
+	libs/pythonscad \
 	libs/boost \
 	libs/gmp \
 	libs/mpfr \
 	libs/zlib \
 	libs/libxml2 \
 	libs/doubleconversion \
+	libs/libjpeg \
 	libs/emscripten-crossfile.meson
 
 SINGLE_BRANCH_MAIN=--branch main --single-branch
@@ -196,8 +202,11 @@ libs/libxml2:
 libs/doubleconversion:
 	git clone https://github.com/google/double-conversion ${SHALLOW} ${SINGLE_BRANCH} $@
 
-libs/openscad:
-	git clone --recurse https://github.com/openscad/openscad.git ${SHALLOW} ${SINGLE_BRANCH} $@
+libs/libjpeg:
+	git clone https://github.com/stohrendorf/libjpeg-cmake ${SHALLOW} ${SINGLE_BRANCH} $@
+
+libs/pythonscad:
+	git clone --recurse https://github.com/pythonscad/pythonscad.git ${SHALLOW} ${SINGLE_BRANCH} $@
 
 libs/boost:
 	wget https://github.com/boostorg/boost/releases/download/boost-1.87.0/boost-1.87.0-b2-nodocs.tar.xz
