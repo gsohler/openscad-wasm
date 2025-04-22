@@ -22,6 +22,7 @@ RUN emcmake cmake -B ../build . \
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} \
         -DCMAKE_BUILD_PARALLEL_LEVEL=${CMAKE_BUILD_PARALLEL_LEVEL} \
         -DEXPERIMENTAL=ON \
+	-DENABLE_PYTHON=ON \
         -DSNAPSHOT=ON \
         -G Ninja && \
     cmake --build ../build --parallel

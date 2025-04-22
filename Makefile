@@ -49,6 +49,8 @@ clean:
 	rm -rf .oci.*
 	rm -rf runtime/dist runtime/node_modules
 
+prune:
+	docker system prune -a -f # list tags
 test:
 	cd tests; deno test --allow-read --allow-write
 
@@ -82,8 +84,6 @@ ifeq ($(BUILDKIT),0)
 		-f Dockerfile \
 		-t $(DOCKER_TAG_OPENSCAD) \
 		--build-arg "CMAKE_BUILD_TYPE=$(CMAKE_BUILD_TYPE)" \
-		--build-arg "EXPERIMENTAL=1" \
-		--build-arg "ENABLE_PYTHON=1" \
 		--build-arg "DOCKER_TAG_BASE=$(DOCKER_TAG_BASE)" \
 		--build-arg "EMSCRIPTEN_FLAGS=$(EMSCRIPTEN_FLAGS)"
 else
@@ -94,8 +94,6 @@ else
 		--load \
 		--build-context $(DOCKER_TAG_BASE)="oci-layout://$(PWD)/$(DOCKER_OCI_BASE)" \
 		--build-arg "CMAKE_BUILD_TYPE=$(CMAKE_BUILD_TYPE)" \
-		--build-arg "EXPERIMENTAL=1" \
-		--build-arg "ENABLE_PYTHON=1" \
 		--build-arg "DOCKER_TAG_BASE=$(DOCKER_TAG_BASE)" \
 		--build-arg "EMSCRIPTEN_FLAGS=$(EMSCRIPTEN_FLAGS)"
 endif
@@ -126,7 +124,6 @@ libs: \
 	libs/cairo \
 	libs/cgal \
 	libs/eigen \
-	libs/cairo \
 	libs/fontconfig \
 	libs/freetype \
 	libs/libffi \
@@ -144,6 +141,8 @@ libs: \
 	libs/libxml2 \
 	libs/doubleconversion \
 	libs/libjpeg \
+	libs/nettle \
+	libs/python \
 	libs/emscripten-crossfile.meson
 
 SINGLE_BRANCH_MAIN=--branch main --single-branch
@@ -204,6 +203,12 @@ libs/doubleconversion:
 
 libs/libjpeg:
 	git clone https://github.com/stohrendorf/libjpeg-cmake ${SHALLOW} ${SINGLE_BRANCH} $@
+
+libs/nettle:
+	git clone https://github.com/letrthong/nettle ${SHALLOW} ${SINGLE_BRANCH} $@
+
+libs/python:
+	git clone https://github.com/python/cpython.git  ${SHALLOW} --branch 3.11 --single-branch $@
 
 libs/pythonscad:
 	git clone --recurse https://github.com/pythonscad/pythonscad.git ${SHALLOW} ${SINGLE_BRANCH} $@
