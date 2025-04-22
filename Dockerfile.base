@@ -27,7 +27,6 @@ RUN --mount=type=cache,target=/var/cache/apt \
       ninja-build \
       pkg-config \
       prelink \
-      elfutils \
       python-is-python3 \
       python3 \
       python3.11 \
@@ -107,12 +106,15 @@ RUN autoconf  && \
     emmake make && \
     emmake make install
 
+#https://github.com/emscripten-core/emscripten/issues/22676
 
 FROM builder AS python
 COPY python .
-RUN emconfigure ./configure -C \
+RUN echo "ac_cv_file__dev_ptmx=no\n\
+ac_cv_file__dev_ptc=no" > config.site &&  READELF=TRUE CONFIG_SITE=config.site emconfigure ./configure -C \
         --host=wasm32-unknown-emscripten \
-        --build=i686 \
+        --build=x86_64-pc-linux-gnu \
+	--disable-ipv6  \
         --with-build-python=/usr/bin/python3.11 \
         --enable-wasm-dynamic-linking=no \
         --prefix=/emsdk/upstream/emscripten/cache/sysroot && \

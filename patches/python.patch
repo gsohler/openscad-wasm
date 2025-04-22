@@ -1,0 +1,12 @@
+diff -Naru python/configure python1/configure
+--- python/configure	2025-04-22 23:23:13.814216648 +0200
++++ python1/configure	2025-04-22 23:18:47.329596623 +0200
+@@ -15717,7 +15717,7 @@
+ $as_echo "$ac_cv_func_memfd_create" >&6; }
+   if test "x$ac_cv_func_memfd_create" = xyes; then :
+ 
+-$as_echo "#define HAVE_MEMFD_CREATE 1" >>confdefs.h
++$as_echo "#define HAVE_MEMFD_CREATEi_DISABLED 1" >>confdefs.h
+ 
+ fi
+ 

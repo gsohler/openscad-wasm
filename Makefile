@@ -209,6 +209,7 @@ libs/nettle:
 
 libs/python:
 	git clone https://github.com/python/cpython.git  ${SHALLOW} --branch 3.11 --single-branch $@
+	git -C $@ apply ../../patches/python.patch
 
 libs/pythonscad:
 	git clone --recurse https://github.com/pythonscad/pythonscad.git ${SHALLOW} ${SINGLE_BRANCH} $@
