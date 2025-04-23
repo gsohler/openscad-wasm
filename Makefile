@@ -51,6 +51,8 @@ clean:
 
 prune:
 	docker system prune -a -f # list tags
+terminal:
+	docker run -i -t openscad/wasm-base-release /bin/bash
 test:
 	cd tests; deno test --allow-read --allow-write
 
