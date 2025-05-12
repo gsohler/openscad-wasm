@@ -1,6 +1,6 @@
 diff -Naru python.ref/configure python/configure
---- python.ref/configure	2025-05-12 15:07:33.317378827 +0200
-+++ python/configure	2025-05-12 15:09:02.390888671 +0200
+--- python.ref/configure	2025-05-12 20:20:37.047821740 +0200
++++ python/configure	2025-05-12 20:22:19.978278039 +0200
 @@ -15717,7 +15717,7 @@
  $as_echo "$ac_cv_func_memfd_create" >&6; }
    if test "x$ac_cv_func_memfd_create" = xyes; then :
@@ -11,25 +11,14 @@ diff -Naru python.ref/configure python/configure
  fi
  
 diff -Naru python.ref/Makefile.pre.in python/Makefile.pre.in
---- python.ref/Makefile.pre.in	2025-05-12 15:07:33.031373979 +0200
-+++ python/Makefile.pre.in	2025-05-12 15:11:37.301514483 +0200
-@@ -498,6 +498,7 @@
+--- python.ref/Makefile.pre.in	2025-05-12 20:20:36.865819165 +0200
++++ python/Makefile.pre.in	2025-05-12 20:21:39.418704190 +0200
+@@ -498,6 +498,8 @@
  		$(OBJECT_OBJS) \
  		$(PYTHON_OBJS) \
  		$(MODULE_OBJS) \
-+                $(LIBMPDEC_A) \
++                $(LIBMPDEC_OBJS) \
++                $(LIBEXPAT_OBJS) \
  		$(MODOBJS)
  
  LIBRARY_OBJS=	\
-diff -Naru python.ref/setup.py python/setup.py
---- python.ref/setup.py	2025-05-12 15:07:33.321378895 +0200
-+++ python/setup.py	2025-05-12 15:10:53.415770596 +0200
-@@ -1476,6 +1476,8 @@
-             Extension(
-                 '_decimal',
-                 ['_decimal/_decimal.c'],
-+                library_dirs=["Modules/_decimal/libmpdec/"],
-+                libraries=["libmpdec.a"]
-                 # Uncomment for extra functionality:
-                 # define_macros=[('EXTRA_FUNCTIONALITY', 1)]
-             )
